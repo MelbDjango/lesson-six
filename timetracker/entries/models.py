@@ -28,7 +28,7 @@ class Entry(models.Model):
 
     def __str__(self):
         return '[{} - {}] ({}) {}'.format(
-            self.start, self.stop, self.project, self.description
+            self.start, self.stop, self.project.name, self.description
         )
 
     def is_finished(self):

@@ -31,7 +31,7 @@ class EntryForm(forms.ModelForm):
         Overload ModelForm __init__ method to perform a check on submitted data
         """
         # Call superclass __init__ method first!
-        super(EntryForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.submit_end_now = self.data.get('submit_end_now', None)
 
     def clean_start(self):
@@ -61,7 +61,7 @@ class EntryForm(forms.ModelForm):
         """
         # Call parent's clean method to ensure any validation logic in parent
         # class is preserved
-        cleaned_data = super(EntryForm, self).clean()
+        cleaned_data = super().clean()
 
         # Get the start and stop values from the cleaned_data dictionary, or
         # None if the dictionary keys are missing

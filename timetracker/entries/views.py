@@ -16,12 +16,20 @@ def clients(request):
         if form.is_valid():
             # If the form is valid, create a client with submitted data
             # Below is the shortcut equivalent of:
-            # client = Client()
-            # client.name = form.cleaned_data['name']
-            # client.save()
+            #
+            #   client = Client()
+            #   client.name = form.cleaned_data['name']
+            #   client.save()
+            #
+            # A shorter way to do create an object, including saving, is:
+            #
+            #   Client.objects.create(name=form.cleaned_data['name'])
+            #
             # Sometimes you don't want to save the object until the end,
             # sometimes you don't care!
-            Client.objects.create(name=form.cleaned_data['name'])
+            #
+            # Since the form is a ModelForm, you can just call `save()`.
+            form.save()
             return redirect('client-list')
     else:
         form = ClientForm()
@@ -43,7 +51,7 @@ class ClientCreateView(CreateView):
     in the functionality of CreateView and ListView classes with a combination
     of the mixin classes they comprise of but for the sake of simplicity we'll
     just pass the client queryset into the template context via
-    get_context_data
+    get_context_data().
     """
     model = Client
     form_class = ClientForm
@@ -54,7 +62,7 @@ class ClientCreateView(CreateView):
     success_url = reverse_lazy('client-list')
 
     def get_context_data(self, **kwargs):
-        context = super(ClientCreateView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['client_list'] = Client.objects.all()
         return context
 
@@ -100,7 +108,8 @@ def entries(request):
         # Create our form object with our POST data
         entry_form = EntryForm(request.POST)
         if entry_form.is_valid():
-            # If the form is valid, let's create and Entry with the submitted data
+            # If the form is valid, let's create and Entry with the submitted
+            # data
             entry = Entry()
             entry.start = entry_form.cleaned_data['start']
             entry.stop = entry_form.cleaned_data['stop']
@@ -128,7 +137,7 @@ class EntryCreateView(CreateView):
     template_name = 'entries.html'
 
     def get_context_data(self, **kwargs):
-        context = super(EntryCreateView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['entry_list'] = Entry.objects.all()
         return context
 
@@ -166,7 +175,7 @@ class ProjectCreateView(CreateView):
     template_name = 'projects.html'
 
     def get_context_data(self, **kwargs):
-        context = super(ProjectCreateView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['project_list'] = Project.objects.all()
         return context
 
@@ -187,7 +196,10 @@ def project_detail(request, pk):
             return redirect('project-list')
     else:
         # Initialise form with project data
-        form = ProjectForm(initial={'name': project.name, 'client': project.client})
+        form = ProjectForm(initial={
+            'name': project.name,
+            'client': project.client
+        })
 
     project = get_object_or_404(Project, pk=pk)
     return render(request, 'project_detail.html', {
